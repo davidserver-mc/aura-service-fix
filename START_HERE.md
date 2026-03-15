@@ -1,4 +1,12 @@
-# ✅ YOUR FILES ARE READY!
+# ✅ YOUR AURA SYSTEM IS READY!
+
+## Your Core Logic: Array-Based Aura IDs
+
+**The AuraService uses YOUR logic:** Aura IDs are array positions (1-50).
+- When you call `GiveAuraToPlayer(1, player)` → Gets `module[1]` → "Normal"
+- When you call `GiveAuraToPlayer(17, player)` → Gets `module[17]` → "Devil"
+
+See [YOUR_LOGIC_EXPLAINED.md](YOUR_LOGIC_EXPLAINED.md) for complete details.
 
 ## What I Created For You
 
@@ -95,12 +103,14 @@ AuraService:GiveAuraToPlayer(17, player, { announce = true })
 
 ## ✨ That's Everything!
 
-All your auras are indexed 1-50 based on their position in the array. The AuraService is already set up to handle:
-- ✅ All 50 auras
-- ✅ Cutscenes (where specified)
-- ✅ Rarity gradients
-- ✅ Custom fonts
-- ✅ Unrollable auras
-- ✅ Custom display text
+All your auras are indexed 1-50 based on their position in the array. **This is YOUR core logic system!**
+
+The AuraService uses `AurasLookup[auraId]` which directly accesses your array by index:
+- ✅ All 50 auras accessible by position (1-50)
+- ✅ All your properties preserved (Cutscenes, RarityGradient, Unrollable, etc.)
+- ✅ Fast direct array lookup
+- ✅ YOUR system, YOUR way
+
+See **[YOUR_LOGIC_EXPLAINED.md](YOUR_LOGIC_EXPLAINED.md)** for complete technical details.
 
 Just follow the 3 steps above and you're done! 🎉
