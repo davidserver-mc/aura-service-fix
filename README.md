@@ -2,6 +2,21 @@
 
 A robust, copy-paste friendly Roblox module for giving auras to players with comprehensive features including cooldowns, one-time-only behavior, auto-equip, and more.
 
+## ⭐ READY TO USE - Start Here!
+
+👉 **[START_HERE.md](START_HERE.md)** - Quick 3-step setup guide with your 50 auras ready to go!
+
+**What's Included:**
+- ✅ Complete `Auras.lua` file with all 50 of your auras (IDs 1-50)
+- ✅ Copy-paste scripts for player data setup
+- ✅ Example ClickDetector scripts
+- ✅ Full aura ID reference guide
+
+**Quick Links:**
+- [PASTE_THIS.md](PASTE_THIS.md) - Exact code to copy-paste
+- [AURA_IDS_REFERENCE.md](AURA_IDS_REFERENCE.md) - All 50 aura IDs and names
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - If something doesn't work
+
 ## 📁 Project Structure
 
 ```
