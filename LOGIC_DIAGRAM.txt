@@ -1,0 +1,88 @@
+╔══════════════════════════════════════════════════════════════════╗
+║          HOW YOUR AURA LOGIC WORKS IN THE SYSTEM                 ║
+╚══════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────┐
+│ YOUR AURA MODULE (Auras.lua)                                     │
+│                                                                   │
+│   local module = {                                                │
+│       {Name = "Normal", OneIn = 3, ...},        ← Aura ID 1      │
+│       {Name = "Celestial", OneIn = 6144, ...},  ← Aura ID 2      │
+│       {Name = "Nature", OneIn = 6, ...},        ← Aura ID 3      │
+│       ...                                                         │
+│       {Name = "Devil", OneIn = 6144, ...},      ← Aura ID 17     │
+│       ...                                                         │
+│       {Name = "Galaxy", OneIn = 2, ...},        ← Aura ID 41     │
+│       ...                                                         │
+│       {Name = "Ethereal Harmony", ...},         ← Aura ID 50     │
+│   }                                                               │
+│                                                                   │
+│   return module                                                   │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+                    LOADED BY AURASERVICE
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ AURASERVICE (AuraService.lua)                                    │
+│                                                                   │
+│   -- Load your module                                             │
+│   local AurasLookup = require(ReplicatedStorage.AurasFolder.Auras)│
+│                                                                   │
+│   -- Use YOUR logic: array indexing                              │
+│   function AuraService:GiveAuraToPlayer(auraId, player, ...)    │
+│       local auraInfo = AurasLookup[auraId]  ← ARRAY INDEX!      │
+│       -- Now has access to ALL your properties:                  │
+│       -- auraInfo.Name                                            │
+│       -- auraInfo.OneIn                                           │
+│       -- auraInfo.TextColor                                       │
+│       -- auraInfo.RarityGradient                                  │
+│       -- auraInfo.Cutscene                                        │
+│       -- auraInfo.Unrollable                                      │
+│       -- etc.                                                     │
+│   end                                                             │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+                    WHEN YOU CALL IT
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ YOUR GAME SCRIPTS                                                 │
+│                                                                   │
+│   -- Give aura ID 1 (Normal)                                     │
+│   AuraService:GiveAuraToPlayer(1, player)                        │
+│   → Accesses: module[1] = {Name="Normal", OneIn=3, ...}         │
+│                                                                   │
+│   -- Give aura ID 17 (Devil)                                     │
+│   AuraService:GiveAuraToPlayer(17, player)                       │
+│   → Accesses: module[17] = {Name="Devil", OneIn=6144, ...}      │
+│                                                                   │
+│   -- Give aura ID 50 (Ethereal Harmony)                         │
+│   AuraService:GiveAuraToPlayer(50, player)                       │
+│   → Accesses: module[50] = {Name="Ethereal Harmony", ...}       │
+└─────────────────────────────────────────────────────────────────┘
+
+╔══════════════════════════════════════════════════════════════════╗
+║                         KEY POINTS                                ║
+╚══════════════════════════════════════════════════════════════════╝
+
+✓ YOUR LOGIC: Position in array = Aura ID
+  - module[1] = first aura = ID 1
+  - module[17] = 17th aura = ID 17
+  - module[50] = 50th aura = ID 50
+
+✓ AURASERVICE USES IT: AurasLookup[auraId]
+  - Direct array access
+  - Fast O(1) lookup
+  - No conversion needed
+
+✓ ALL PROPERTIES WORK:
+  - Name, OneIn, TextColor → Always present
+  - RarityGradient, Cutscene → Optional, used when present
+  - AuraFont, Unrollable → Optional, used when present
+  - OneInDisplay, RarityColor, CostInSeconds → Optional
+
+✓ YOUR SYSTEM, YOUR WAY!
+  - You control the array order
+  - You define the properties
+  - AuraService respects YOUR structure
+
+═══════════════════════════════════════════════════════════════════
