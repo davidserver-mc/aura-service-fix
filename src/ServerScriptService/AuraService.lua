@@ -133,7 +133,10 @@ end
 -- Options table (optional): { autoEquip = bool, announce = bool, cooldown = number, visualDuration = number, deletePart = instance (or nil), oneTimeOnly = bool }
 -- Returns: true, auraInfo or false, errorMessage
 function AuraService:GiveAuraToPlayer(auraId, player, options)
+	print(("[AuraService] GiveAuraToPlayer called: auraId=%s, player=%s"):format(tostring(auraId), player and player.Name or "nil"))
+	
 	if not player or not auraId then
+		warn("[AuraService] ERROR: Missing player or auraId")
 		return false, "Missing player or auraId"
 	end
 
@@ -144,38 +147,50 @@ function AuraService:GiveAuraToPlayer(auraId, player, options)
 	local visualDuration = options.visualDuration or DEFAULT_VISUAL_DURATION
 	local deletePart = options.deletePart -- optional part to destroy after giving
 	local oneTimeOnly = (options.oneTimeOnly == nil) and DEFAULT_ONE_TIME_ONLY or options.oneTimeOnly
+	
+	print(("[AuraService] Options: cooldown=%s, autoEquip=%s, announce=%s, oneTimeOnly=%s"):format(
+		tostring(cooldown), tostring(autoEquip), tostring(announce), tostring(oneTimeOnly)))
 
 	-- load player save data module (expected under player.PlayerSaveData)
 	local saveModule = player:FindFirstChild("PlayerSaveData")
 	if not saveModule then
-		-- If oneTimeOnly is true, behave silently like earlier scripts might (but return false)
+		warn(("[AuraService] ERROR: PlayerSaveData module not found for %s"):format(player.Name))
 		return false, "Player data not loaded yet!"
 	end
+	print(("[AuraService] Found PlayerSaveData module for %s"):format(player.Name))
+	
 	local ok, saveData = pcall(function() return require(saveModule) end)
 	if not ok or type(saveData) ~= "table" then
+		warn(("[AuraService] ERROR: Failed to load player save data for %s: %s"):format(player.Name, tostring(saveData)))
 		return false, "Failed to load player save data!"
 	end
+	print(("[AuraService] Successfully loaded save data for %s"):format(player.Name))
 
 	-- aura lookup validation
 	if not AurasLookup then
+		warn("[AuraService] ERROR: AurasLookup table is nil! Make sure ReplicatedStorage.AurasFolder.Auras exists")
 		return false, "Server aura definitions missing!"
 	end
 	local auraInfo = AurasLookup[auraId]
 	if not auraInfo then
+		warn(("[AuraService] ERROR: Invalid aura ID %s - not found in AurasLookup"):format(tostring(auraId)))
 		return false, "Invalid aura ID!"
 	end
+	print(("[AuraService] Found aura info: %s"):format(auraInfo.Name or "Unknown"))
 
 	saveData.Auras = saveData.Auras or {}
 	saveData.Index = saveData.Index or {}
+	print(("[AuraService] Player currently has %d auras"):format(#saveData.Auras))
 
 	-- ONE-TIME-ONLY behavior: if set, silently ignore players who already had the aura
 	if oneTimeOnly and table.find(saveData.Auras, auraId) then
-		-- return false with a clear message; caller can choose to ignore this
+		print(("[AuraService] Player %s already has aura %d (one-time only, silently ignoring)"):format(player.Name, auraId))
 		return false, "Already had aura (one-time only)"
 	end
 
 	-- Prevent duplicate gives normally as well
 	if table.find(saveData.Auras, auraId) then
+		print(("[AuraService] Player %s already has aura %d (sending warning)"):format(player.Name, auraId))
 		sendWarning(player, "You already have " .. (auraInfo.Name or "this aura") .. "!")
 		return false, "You already have " .. (auraInfo.Name or "this aura") .. "!"
 	end
@@ -183,7 +198,9 @@ function AuraService:GiveAuraToPlayer(auraId, player, options)
 	-- inventory limit check (optional)
 	if player:FindFirstChild("PlayerStats") and player.PlayerStats:FindFirstChild("InventoryLimit") then
 		local limit = player.PlayerStats.InventoryLimit.Value
+		print(("[AuraService] Checking inventory limit: %d/%d"):format(#saveData.Auras, limit))
 		if #saveData.Auras >= limit then
+			warn(("[AuraService] ERROR: Inventory full for %s (%d/%d)"):format(player.Name, #saveData.Auras, limit))
 			sendWarning(player, "Your inventory is full!")
 			return false, "Your inventory is full!"
 		end
@@ -192,24 +209,30 @@ function AuraService:GiveAuraToPlayer(auraId, player, options)
 	-- cooldown check (do this after duplicate/oneTime checks so we don't waste cooldowns)
 	local last = touchCooldowns[player.UserId]
 	if last and (os.clock() - last) < cooldown then
+		local remaining = cooldown - (os.clock() - last)
+		print(("[AuraService] Cooldown active for %s (%.1f seconds remaining)"):format(player.Name, remaining))
 		return false, "Cooldown active"
 	end
 	-- reserve the timestamp immediately
 	touchCooldowns[player.UserId] = os.clock()
+	print(("[AuraService] Cooldown set for %s"):format(player.Name))
 
 	-- give the aura
+	print(("[AuraService] Adding aura %d to %s's inventory"):format(auraId, player.Name))
 	table.insert(saveData.Auras, auraId)
 	if not table.find(saveData.Index, auraId) then
 		table.insert(saveData.Index, auraId)
 	end
 
 	-- notify player + server
+	print(("[AuraService] ✅ SUCCESS! Gave aura %d (%s) to %s"):format(auraId, auraInfo.Name or "Unknown", player.Name))
 	sendWarning(player, "✨ You received: " .. (auraInfo.Name or "an aura") .. "!")
 	if announce then announceAll(player, auraId) end
 	playSuccessSound(player.Character and player.Character:FindFirstChildWhichIsA("BasePart") or workspace)
 
 	-- auto-equip
 	if autoEquip then
+		print(("[AuraService] Attempting auto-equip for %s"):format(player.Name))
 		tryAutoEquip(player, auraId)
 	end
 

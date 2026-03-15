@@ -37,8 +37,22 @@ local OPTIONS = {
 -- ============================================
 -- METHOD 1: Using BindClick (recommended - simplest)
 -- ============================================
-AuraService:BindClick(clickDetector, AURA_ID, OPTIONS)
-print(("[ClickDetectorExample] Bound click detector on %s to give aura %d"):format(part.Name, AURA_ID))
+print(("[ClickDetectorExample] Binding click detector on %s to give aura %d"):format(part.Name, AURA_ID))
+print(("[ClickDetectorExample] Options: cooldown=%d, autoEquip=%s, announce=%s, oneTimeOnly=%s"):format(
+	OPTIONS.cooldown, tostring(OPTIONS.autoEquip), tostring(OPTIONS.announce), tostring(OPTIONS.oneTimeOnly)))
+
+-- Add manual connection with explicit debug logging
+clickDetector.Activated:Connect(function(player)
+	print(("[ClickDetectorExample] Click detected! Player: %s"):format(player and player.Name or "nil"))
+	local success, result = AuraService:GiveAuraToPlayer(AURA_ID, player, OPTIONS)
+	if success then
+		print(("[ClickDetectorExample] ✅ Successfully gave aura to %s"):format(player.Name))
+	else
+		print(("[ClickDetectorExample] ❌ Failed to give aura to %s: %s"):format(player.Name, tostring(result)))
+	end
+end)
+
+print(("[ClickDetectorExample] ✅ Setup complete - ready to give aura %d"):format(AURA_ID))
 
 -- ============================================
 -- METHOD 2: Using MakeHandler (alternative)
