@@ -21,16 +21,10 @@ end)
 ## 2. In ReplicatedStorage
 Create this structure:
 - **Folder** named "AurasFolder"
-  - Inside it: **ModuleScript** named "Auras" with this code:
-
-```lua
-return {
-    [43] = {
-        Name = "Test Aura",
-        Rarity = "Common"
-    }
-}
-```
+  - Inside it: **ModuleScript** named "Auras"
+  
+**Copy the entire contents of `Auras.lua` from this repository into that ModuleScript!**
+(The file contains all 50 of your auras with proper IDs 1-50)
 
 - **Folder** named "Remotes"
   - Inside it: **RemoteEvent** named "Warning"
