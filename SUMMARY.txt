@@ -1,0 +1,50 @@
+╔══════════════════════════════════════════════════════════════════╗
+║              YOUR AURA SERVICE IS READY TO USE!                  ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📁 WHAT YOU GOT:
+
+  1. Auras.lua ..................... Your 50 auras (copy into Roblox)
+  2. START_HERE.md ................. Quick start guide (READ THIS FIRST!)
+  3. PASTE_THIS.md ................. Exact code to copy-paste
+  4. AURA_IDS_REFERENCE.md ......... All aura IDs in a table
+  5. src/ServerScriptService/ ...... Pre-made example scripts
+
+
+🎯 QUICK SETUP (3 STEPS):
+
+  Step 1: Create SetupPlayerData script (see START_HERE.md)
+  Step 2: Copy Auras.lua into ReplicatedStorage.AurasFolder.Auras
+  Step 3: Add ClickDetector to your part with example script
+
+  
+📊 YOUR AURAS (IDs 1-50):
+
+  Common:     IDs 1, 3, 4, 5, 6, 7, 35, 41
+  Uncommon:   IDs 8-15
+  Rare:       IDs 16-20, 36-40, 42-50
+  Legendary:  IDs 21-34 (with cutscenes!)
+
+  
+💡 EXAMPLE USAGE:
+
+  -- Give aura #1 (Normal) on click
+  AuraService:BindClick(clickDetector, 1, { cooldown = 5 })
+  
+  -- Give aura #17 (Devil) with cutscene
+  AuraService:GiveAuraToPlayer(17, player, { announce = true })
+  
+  -- Give aura #41 (Galaxy) one-time only
+  AuraService:BindClick(clickDetector, 41, { oneTimeOnly = true })
+
+
+📖 MORE INFO:
+
+  • TROUBLESHOOTING.md - If something doesn't work
+  • QUICK_START.md - Detailed setup guide
+  • MIGRATION.md - If you have existing aura code
+
+
+✅ READY TO GO! Open START_HERE.md for step-by-step instructions.
+
+═══════════════════════════════════════════════════════════════════
